@@ -13,6 +13,7 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 import NavbarBreadcrumbs from './NavbarBreadcrumbs.tsx';
 import MenuButton from '../SideMenu/MenuButton.tsx';
 import SideMenuMobile from "../SideMenu/SideMenuMobile.tsx";
+import ColorModeIconDropdown from "../../theme/ColorModeIconDropdown.tsx";
 
 const Toolbar = styled(MuiToolbar)({
     width: '100%',
@@ -71,16 +72,17 @@ export default function Header() {
                             Virtual Card Platform
                         </Typography>
                     </Stack>
+                    <ColorModeIconDropdown />
                     <Stack direction="row" sx={{ gap: 1 }}>
                         <MenuButton showBadge aria-label="Open notifications">
                             {/* TODO create a proper notification component + system*/}
                             <NotificationsRoundedIcon />
                         </MenuButton>
                     </Stack>
+                    <SideMenuMobile open={open} toggleDrawer={toggleDrawer} />
                     <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
                         <MenuRoundedIcon />
                     </MenuButton>
-                    <SideMenuMobile open={open} toggleDrawer={toggleDrawer} />
                 </Stack>
                 <NavbarBreadcrumbs />
 

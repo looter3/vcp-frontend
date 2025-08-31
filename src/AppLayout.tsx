@@ -11,11 +11,31 @@ export const AppLayout: React.FC = () => {
     return (
         <CardProvider>
             <CssBaseline enableColorScheme />
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{
+                display: "flex",
+                backgroundColor: 'background.default',
+                minHeight: '100vh',
+                width: '100vw'
+            }}>
                 <SideMenu />
-                <Box component="main" sx={{ flexGrow: 1 }}>
+                <Box
+                    component="main"
+                    sx={{
+                        flexGrow: 1,
+                        backgroundColor: 'background.default',
+                        overflow: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }}
+                >
                     <Header />
-                    <Outlet />
+                    <Box sx={{
+                        flex: 1,
+                        p: { xs: 2, sm: 3 },  // ← QUESTO WRAPPER MANCAVA!
+                        backgroundColor: 'background.default'  // ← E questo
+                    }}>
+                        <Outlet />
+                    </Box>
                 </Box>
             </Box>
         </CardProvider>

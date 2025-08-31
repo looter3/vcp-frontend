@@ -1,56 +1,38 @@
 import * as React from 'react';
-import { ThemeProvider, createTheme, type Theme } from '@mui/material/styles';
-import type { ThemeOptions } from '@mui/material/styles';
-import { inputsCustomizations } from './customizations/inputs';
-import { dataDisplayCustomizations } from './customizations/dataDisplay';
-import { feedbackCustomizations } from './customizations/feedback';
-import { navigationCustomizations } from './customizations/navigation';
-import { surfacesCustomizations } from './customizations/surfaces';
-import { colorSchemes, typography, shadows, shape } from './themePrimitives';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { inputsCustomizations } from './customizations/inputs.tsx';
+import { dataDisplayCustomizations } from './customizations/dataDisplay.tsx';
+import { feedbackCustomizations } from './customizations/feedback.tsx';
+import { navigationCustomizations } from './customizations/navigation.tsx';
+import { surfacesCustomizations } from './customizations/surfaces.ts';
+import { colorSchemes, typography, shadows, shape } from './themePrimitives.ts';
 
-interface AppThemeProps {
-    children: React.ReactNode;
-    /**
-     * This is for the docs site. You can ignore it or remove it.
-     */
-    disableCustomTheme?: boolean;
-    themeComponents?: ThemeOptions['components'];
-}
+export default function AppTheme() {
 
-export default function AppTheme(props: AppThemeProps) {
-    const { children, disableCustomTheme, themeComponents = {} } = props;
+    // Base component customizations
+    const baseComponents = {
+        ...inputsCustomizations,
+        ...dataDisplayCustomizations,
+        ...feedbackCustomizations,
+        ...navigationCustomizations,
+        ...surfacesCustomizations,
+    };
 
-    const theme = React.useMemo<Theme>(() => {
-        return disableCustomTheme
-            ? createTheme() // returns default MUI theme
-            : createTheme({
-                // CSS variables config (MUI v6)
-                cssVariables: {
-                    colorSchemeSelector: 'data-mui-color-scheme',
-                    cssVarPrefix: 'template',
-                },
-                colorSchemes,
-                typography,
-                shadows,
-                shape,
-                components: {
-                    ...inputsCustomizations,
-                    ...dataDisplayCustomizations,
-                    ...feedbackCustomizations,
-                    ...navigationCustomizations,
-                    ...surfacesCustomizations,
-                    ...themeComponents,
-                },
-            });
-    }, [disableCustomTheme, themeComponents]);
-
-    if (disableCustomTheme) {
-        return <React.Fragment>{children}</React.Fragment>;
-    }
+    const theme = createTheme({
+        cssVariables: {
+            colorSchemeSelector: 'data-mui-color-scheme',
+            cssVarPrefix: 'template',
+        },
+        colorSchemes,
+        typography,
+        shadows,
+        shape,
+        components: baseComponents,
+    });
 
     return (
-        <ThemeProvider theme={theme} disableTransitionOnChange>
-    {children}
-    </ThemeProvider>
-);
+        <ThemeProvider theme={theme} >
+            {children}
+        </ThemeProvider>
+    );
 }

@@ -7,11 +7,11 @@ export default function Dashboard() {
         <Box sx={{ display: 'flex' }}>
             <Box
                 component="main"
-                sx={(theme) => ({
+                sx={{
                     flexGrow: 1,
-                    backgroundColor: theme.palette.background.default,
+                    backgroundColor: 'background.default',
                     overflow: 'auto',
-                })}
+                }}
             >
                 <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                     <MainGrid />

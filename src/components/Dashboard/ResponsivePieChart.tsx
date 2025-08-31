@@ -1,7 +1,7 @@
+import * as React from "react";
 import { PieChart } from '@mui/x-charts/PieChart';
 import {styled} from "@mui/material/styles";
 import {useDrawingArea} from "@mui/x-charts/hooks";
-import * as React from "react";
 import {formatCurrency} from "../../helpers/CurrencyHelper.ts";
 
 interface PieDataItem {
@@ -69,38 +69,46 @@ const StyledText = styled('text', {
 function PieCenterLabel({ primaryText, secondaryText, availableWidth }: PieCenterLabelProps) {
     const { width, height, left, top } = useDrawingArea();
 
-    // Calculate dynamic font size for primaryText
-    const maxFontSize = 32; // Maximum allowed font size
-    const minFontSize = 14; // Minimum allowed font size
-    const padding = 10; // Padding from the edges of the availableWidth
+    // Font size boundaries
+    const maxFontSize = 32;
+    const minFontSize = 12;
+    const padding = 8;
 
-    // Estimate the text width to calculate the appropriate font size
-    // This is a simplified estimation; for precise fitting, one might need an SVG text measurement approach.
-    // Assuming an average character width, we can derive a scaling factor.
-    const estimatedCharWidth = 0.5; // Rough ratio of font size to character width
+    // Rough width estimation based on number of characters
+    const estimatedCharWidthRatio = 0.6; // Slightly more conservative
     const textLength = primaryText.length;
 
-    // Calculate the desired font size based on available width
-    const desiredFontSize = (availableWidth - padding * 2) / (textLength * estimatedCharWidth);
+    // Compute desired font size to fit within availableWidth
+    const desiredFontSize = (availableWidth - padding * 2) / (textLength * estimatedCharWidthRatio);
 
-    // Clamp the font size within min and max limits
+    // Clamp font size
     const calculatedFontSize = Math.max(minFontSize, Math.min(maxFontSize, desiredFontSize));
 
-    // Adjust vertical positioning for better centering of both lines of text
-    const primaryY = top + height / 2 - (calculatedFontSize / 2 + 5); // Shift primary text up based on its size
-    const secondaryY = primaryY + calculatedFontSize + 8; // Position secondary text below primary, considering primary's size
+    // Compute vertical positioning
+    const primaryY = top + height / 2 - calculatedFontSize / 2;
+    const secondaryY = primaryY + calculatedFontSize + 4; // spacing between primary & secondary
 
     return (
         <React.Fragment>
-            <StyledText variant="primary" x={left + width / 2} y={primaryY} calculatedFontSize={calculatedFontSize}>
+            <StyledText
+                variant="primary"
+                x={left + width / 2}
+                y={primaryY}
+                calculatedFontSize={calculatedFontSize}
+            >
                 {primaryText}
             </StyledText>
-            <StyledText variant="secondary" x={left + width / 2} y={secondaryY}>
+            <StyledText
+                variant="secondary"
+                x={left + width / 2}
+                y={secondaryY}
+            >
                 {secondaryText}
             </StyledText>
         </React.Fragment>
     );
 }
+
 
 export function ResponsivePieChart({ data, colors, formattedBalance }: Props) {
     const fixedOuterRadius = 130;

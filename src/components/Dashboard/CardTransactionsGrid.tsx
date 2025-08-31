@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {DataGrid, type GridColDef} from "@mui/x-data-grid";
+import {DataGrid, type GridColDef, type GridRowsProp} from "@mui/x-data-grid";
 import {getTransactionsByCardId} from "../../api/transaction-api.ts";
 import Chip from "@mui/material/Chip";
 import {formatCurrency} from "../../helpers/CurrencyHelper.ts";
@@ -12,20 +12,12 @@ type Props = {
     cardCode: string;
 };
 
-type RowData = {
-    transactionCode: string,
-    cardCode: string,
-    type: InOut,
-    amount: number,
-    createdAt: string;
-}
-
 export default function CardTransactionsGrid({ cardId, cardCode }: Props) {
 
     function renderStatus(status: 'IN' | 'OUT') {
         const colors: { [index: string]: 'success' | 'error' } = {
-            IN: 'success', // green
-            OUT: 'error', // MUI pink
+            IN: 'success',
+            OUT: 'error',
         };
 
         return <Chip label={status} color={colors[status]} size="small" />;
@@ -59,7 +51,7 @@ export default function CardTransactionsGrid({ cardId, cardCode }: Props) {
             minWidth: 120,
             renderCell: (params) => {
                 const date = new Date(params.value);
-                return date.toLocaleString(); // or custom format
+                return date.toLocaleString();
             },
         },
     ];
@@ -75,7 +67,7 @@ export default function CardTransactionsGrid({ cardId, cardCode }: Props) {
 
     const transactions: Transaction[] = data?.transactions || [];
 
-    const rowData: RowData[] = transactions.map(transaction => ({
+    const rowData: GridRowsProp = transactions.map(transaction => ({
         transactionCode: transaction.code,
         cardCode: cardCode,
         type: transaction.senderCardId == cardId ? InOut.OUT : InOut.IN,
@@ -83,61 +75,29 @@ export default function CardTransactionsGrid({ cardId, cardCode }: Props) {
         createdAt: transaction.createdAt,
     }));
 
-    console.log("CardTransactionGrid: transactions: ", data?.transactions);
-
     if (isLoading) return <p>Loading transactions for card {cardId}...</p>;
     if (isError) return <p>Error loading transactions for card {cardId}</p>;
 
     return (
-        <div style={{ marginBottom: "2rem" }}>
-            <h3>Transactions for Card: {cardCode}</h3>
-            <DataGrid
-                checkboxSelection
-                rows={rowData || []}
-                columns={columns}
-                getRowId={(row) => row.transactionCode}
-                rowCount={data?.metadata.totalElements || 0} // assuming your API response has this
-                pagination
-                paginationMode="server"
-                pageSizeOptions={[10, 20, 50]}
-                paginationModel={{ page, pageSize }}
-                onPaginationModelChange={(model) => {
-                    setPage(model.page);
-                    setPageSize(model.pageSize);
-                }}
-                getRowClassName={(params) =>
-                    params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
-                }
-                disableColumnResize
-                density="compact"
-                slotProps={{
-                    filterPanel: {
-                        filterFormProps: {
-                            logicOperatorInputProps: {
-                                variant: 'outlined',
-                                size: 'small',
-                            },
-                            columnInputProps: {
-                                variant: 'outlined',
-                                size: 'small',
-                                sx: { mt: 'auto' },
-                            },
-                            operatorInputProps: {
-                                variant: 'outlined',
-                                size: 'small',
-                                sx: { mt: 'auto' },
-                            },
-                            valueInputProps: {
-                                InputComponentProps: {
-                                    variant: 'outlined',
-                                    size: 'small',
-                                },
-                            },
-                        },
-                    },
-                }}
-            />
-
-        </div>
+        <DataGrid
+        checkboxSelection
+        rows={rowData || []}
+        columns={columns}
+        getRowId={(row) => row.transactionCode}
+        rowCount={data?.metadata.totalElements || 0}
+        pagination
+        paginationMode="server"
+        pageSizeOptions={[10, 20, 50]}
+        paginationModel={{ page, pageSize }}
+        onPaginationModelChange={(model) => {
+            setPage(model.page);
+            setPageSize(model.pageSize);
+        }}
+        getRowClassName={(params) =>
+            params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+        }
+        disableColumnResize
+        density="compact"
+        />
     );
 }

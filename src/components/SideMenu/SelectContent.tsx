@@ -12,11 +12,11 @@ import {
     Divider,
 } from '@mui/material';
 import {
-    DevicesRounded as DevicesRoundedIcon,
     AddRounded as AddRoundedIcon,
 } from '@mui/icons-material';
 import {useCardContext} from "../Context/CardContext.tsx";
 import {useNavigate} from "react-router-dom";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
 
 
 export default function SelectContent() {
@@ -87,7 +87,7 @@ export default function SelectContent() {
                 <MenuItem key={card.code} value={card.code}>
                     <ListItemAvatar>
                         <Avatar alt={card.code}>
-                            <DevicesRoundedIcon sx={{ fontSize: '1rem' }} />
+                            <CreditCardIcon sx={{ fontSize: '1rem' }} />
                         </Avatar>
                     </ListItemAvatar>
                     {/* Conditionally apply a style to the primary ListItemText */}
